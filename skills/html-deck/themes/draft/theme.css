@@ -1,0 +1,66 @@
+/* Тема «Калька». Накладывается scripts/apply-theme.py:
+   значения токенов поверх нейтральных, шрифты вшиваются в деку. Контраст — THEME.md. */
+@font-face{font-family:"Tektur";src:url(../_fonts/tektur-cyrillic.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Tektur";src:url(../_fonts/tektur-latin.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Commissioner";src:url(../_fonts/commissioner-cyrillic.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Commissioner";src:url(../_fonts/commissioner-latin.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Martian Mono";src:url(../_fonts/martian-mono-cyrillic.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Martian Mono";src:url(../_fonts/martian-mono-latin.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{
+  --paper:#F4F8FD;
+  --paper-deep:#E2EBF7;
+  --peach:#D7EAF0;
+  --lilac:#C5D2E6;
+  --lilac-mid:#7187B1;
+  --ink:#12357A;
+  --ink-soft:#384976;
+  --ink-faint:#556786;
+  --flame:#00838F;
+  --flame-deep:#00838F;
+  --measured:#007D89;
+  --measured-deep:#006A72;
+  --rule:rgba(18,53,122,.14);
+  --font-serif:"Tektur",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font-sans:"Commissioner",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font-mono:"Martian Mono",ui-monospace,Menlo,monospace;
+}
+/* характер темы: начало */
+@font-face{font-family:"LXGW WenKai TC";src:url(../_fonts/lxgw-wenkai-tc-cyrillic.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"LXGW WenKai TC";src:url(../_fonts/lxgw-wenkai-tc-latin.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --display-weight:700;
+  --display-case:uppercase;
+  --display-track:.01em;
+  --display-scale:0.84;
+  --h2-scale:0.92;
+  --display-shadow:none;
+  --stage-pattern:linear-gradient(rgba(18,53,122,0.07) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,rgba(18,53,122,0.07) 1px,transparent 1px) 0 0/32px 32px;
+  --font-hand:"LXGW WenKai TC",cursive;
+  --hand-style:normal;
+  --hand-weight:700;
+  --hand-size:24px;
+  --hand-ink:#C4213A;
+  --mk-shadow:0 0 0 1.6px #C4213A;
+  --mk-deco:none;
+  --acc2:#C4213A;
+  --mk-radius:45%;
+  --mk-pad:0 .18em;
+  /* блоки: контуры чертежа поверх сетки, без заливки и скруглений; вывод — пунктирная рамка допуска */
+  --block-bg:rgba(244,248,253,.72);
+  --block-border:1px solid rgba(18,53,122,.38);
+  --block-shadow:none;
+  --block-radius:2px;
+  --tk-bg:var(--paper);
+  --tk-border:1.5px dashed var(--flame);
+  --tk-bar:5px solid var(--flame);
+  --tk-radius:0;
+  --tk-shadow:none;
+  --tk-font:var(--font-sans);  /* Tektur рисует «д» как «g»: в длинной фразе не читается */
+  --bento-bg:#E8EFF8;
+  --tile-bg:var(--paper);
+  --tile-border:1px solid rgba(18,53,122,.38);
+  --tile-shadow:none;
+  --tile-radius:2px;
+}
+/* характер темы: конец */

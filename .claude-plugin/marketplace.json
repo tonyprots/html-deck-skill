@@ -1,0 +1,32 @@
+{
+  "name": "tonyprots",
+  "owner": {
+    "name": "Anton Protsenko",
+    "url": "https://tonyprots.ru"
+  },
+  "metadata": {
+    "description": "Скиллы Антона Проценко для Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "html-deck",
+      "source": "./",
+      "description": "Презентации в HTML: сцена 1280×720, одна мысль на слайд, шесть тем, аудит вёрстки и текста.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Anton Protsenko",
+        "url": "https://tonyprots.ru"
+      },
+      "license": "MIT",
+      "keywords": [
+        "presentation",
+        "slides",
+        "deck",
+        "html",
+        "russian"
+      ],
+      "category": "productivity"
+    }
+  ]
+}

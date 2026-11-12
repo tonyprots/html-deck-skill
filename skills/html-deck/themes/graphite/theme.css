@@ -1,0 +1,60 @@
+/* Тёмная тема «Графит». Накладывается scripts/apply-theme.py:
+   значения токенов поверх нейтральных, шрифты вшиваются в деку. Контраст — THEME.md. */
+@font-face{font-family:"Geologica";src:url(../_fonts/geologica-cyrillic.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Geologica";src:url(../_fonts/geologica-latin.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{
+  color-scheme:dark;
+  --paper:#1A1917;
+  --paper-deep:#292825;
+  --peach:#32371B;
+  --lilac:#3C3B38;
+  --lilac-mid:#72716D;
+  --ink:#ECEBE4;
+  --ink-soft:#C6C5BF;
+  --ink-faint:#9F9E99;
+  --flame:#C9F031;
+  --flame-deep:#C9F031;
+  --measured:#C9F031;
+  --measured-deep:#C9F031;
+  --on-accent:#1A1917;
+  --rule:rgba(236,235,228,.16);
+  --font-serif:"Geologica",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --font-sans:"Geologica",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+/* характер темы: начало */
+@font-face{font-family:"Pangolin";src:url(../_fonts/pangolin-cyrillic.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Pangolin";src:url(../_fonts/pangolin-latin.woff2) format("woff2");font-weight:100 900;font-display:block;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --display-weight:800;
+  --display-case:none;
+  --display-track:-.035em;
+  --display-scale:1;
+  --h2-scale:1;
+  --display-shadow:none;
+  --stage-pattern:radial-gradient(90% 55% at 50% -15%,rgba(255,248,236,.07),transparent 70%);
+  --font-hand:"Pangolin",cursive;
+  --hand-style:normal;
+  --hand-weight:400;
+  --hand-size:26px;
+  --hand-ink:#ECEBE4;
+  --mk-shadow:none;
+  --mk-deco:underline 3px #C9F031;
+  --acc2:var(--flame);
+  /* блоки: графит на тон светлее сцены с тонкой кромкой; вывод — лаймовый край */
+  --block-bg:#242320;
+  --block-border:1px solid rgba(236,235,228,.09);
+  --block-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  --block-radius:14px;
+  --tk-bg:#242320;
+  --tk-border:1px solid rgba(201,240,49,.32);
+  --tk-bar:4px solid var(--flame);
+  --tk-radius:14px;
+  --tk-shadow:none;
+  --bento-bg:#141412;
+  --tile-bg:#242320;
+  --tile-border:1px solid rgba(236,235,228,.09);
+  --tile-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  --tile-radius:14px;
+}
+/* характер темы: конец */

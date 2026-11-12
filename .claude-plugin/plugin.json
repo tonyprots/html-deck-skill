@@ -1,0 +1,24 @@
+{
+  "name": "html-deck",
+  "version": "1.0.0",
+  "description": "Презентации в HTML для Claude Code и Codex: сцена 1280×720, одна мысль на слайд, заголовки-отгадки, шесть тем с вшитыми шрифтами, аудит вёрстки и текста, план текстом до вёрстки, пульт с телефона. Правила из реальных правок докладчика, тексты на русском.",
+  "author": {
+    "name": "Anton Protsenko",
+    "url": "https://tonyprots.ru"
+  },
+  "homepage": "https://github.com/tonyprots/html-deck-skill",
+  "repository": "https://github.com/tonyprots/html-deck-skill",
+  "license": "MIT",
+  "keywords": [
+    "presentation",
+    "slides",
+    "deck",
+    "html-presentation",
+    "pitch-deck",
+    "russian",
+    "claude-code",
+    "codex",
+    "agent-skill"
+  ],
+  "skills": "./skills"
+}

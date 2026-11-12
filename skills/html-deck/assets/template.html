@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="deck-version" content="v1 · ГГГГ-ММ-ДД">
+<title>Название деки</title>
+<!-- Иконка-заглушка шаблона: заменить на тематическую под деку. Аудит оставленную ловит как favicon: "template" -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffffff'/%3E%3Cpath d='M7 6v20M25 6v20' stroke='%231A1817' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M7 16h18' stroke='%23FF6427' stroke-width='2.8' stroke-linecap='round'/%3E%3Cpath d='M11 12v8M21 12v8' stroke='%231A1817' stroke-width='1.4' stroke-linecap='round' opacity='.4'/%3E%3C/svg%3E">
+<style>
+/* ---------- токены ----------
+   Нейтральная тема по умолчанию: акцент — глубокий зелёный. Другая тема
+   (корпоративная из themes/ или тема площадки) меняет только значения,
+   имена остаются, компоненты не трогаются: scripts/apply-theme.py или
+   layout-rules.md, «Тема площадки». */
+:root{
+  --paper:#FFFFFF;
+  --paper-deep:#F2F2F5;     /* дополнительный фон: карточки, треки, фон бенто */
+  --peach:#E3F4EE;          /* светлая подложка акцента: «это про нас» */
+  --lilac:#E1E4EE;          /* нейтральная ступень: теги */
+  --lilac-mid:#A9B2CC;      /* нейтральная заливка столбиков */
+  --ink:#1A1817;
+  --ink-soft:#4A4744;       /* тело карточек, лид */
+  --ink-faint:#6E6B67;      /* подписи, th; 5,3:1 к белому */
+  --flame:#1F8A70;          /* акцент: заливки и линии (4,26:1 на белом — текстом не ставить) */
+  --flame-deep:#177258;     /* крупные числа ≥ 40px: 5,9:1 */
+  --measured:#16735C;       /* текст акцентом на белом: 5,8:1 */
+  --measured-deep:#11604C;  /* текст акцентом на --peach и --paper-deep: 6,6:1 */
+  --on-accent:#FFFFFF;      /* текст на заливке --measured (плитки бенто, ступень лесенки); в тёмной теме — тёмный */
+  --rule:rgba(26,24,23,.13);
+  --font-sans:-apple-system,system-ui,"Segoe UI",Arial,Helvetica,sans-serif;
+  --font-serif:"NY",ui-serif,Georgia,serif;   /* дисплейный: заголовки, крупные числа, вывод; в теме может быть и гротеском */
+  --font-mono:ui-monospace,"SF Mono",Menlo,monospace;
+  /* характер темы: заголовок, фон-приём, пометка от руки, маркер, второй цвет. Значения по умолчанию
+     дают нейтральную деку; тема из themes/ меняет их, компоненты не трогает */
+  --display-weight:600;     /* дисплейный шрифт: h2, обложка, перебивка, крупные числа */
+  --display-case:none;      /* капс только обложки и перебивки: длинный h2 капсом не читается */
+  --display-track:0em;      /* добавка к трекингу дисплейного */
+  --display-scale:1;        /* масштаб обложки, перебивки и чисел бенто: узкий шрифт крупнее, широкий мельче */
+  --h2-scale:1;             /* масштаб h2, держать 0,9–1,15 */
+  --display-shadow:none;    /* сдвиг приводки и подобное: text-shadow обложки и перебивки */
+  --stage-pattern:none;     /* фон-приём под всеми слайдами: сетка, линейка, зерно, пятно света */
+  --font-hand:var(--font-serif);  /* пометка от руки .hand */
+  --hand-style:italic;
+  --hand-weight:400;
+  --hand-size:26px;
+  --hand-ink:var(--measured);     /* от 4,5:1 к --paper */
+  --mk-shadow:inset 0 -.36em 0 var(--peach);  /* маркер .mk: заливка под словом… */
+  --mk-deco:none;                             /* …или подчёркивание: «underline wavy <цвет> 2px» */
+  --acc2:var(--flame);      /* второй цвет темы: .tag.alt, пометки; в нейтральной совпадает с акцентом */
+  --mk-bg:none;             /* маркер-мазок: фон-картинка под словом (тема «Клуб» — мазок кисти) */
+  --font-label:var(--font-sans);  /* подписи капителью: теги, шапки таблиц, кикер, «Кто я» */
+  --font-kick:var(--font-serif);  /* подпись площадки на обложке .kick */
+  --main-tile-bg:var(--measured); /* главная плитка бенто */
+  --main-tile-ink:var(--on-accent);
+  --ring-ink:#D7322D;       /* обводка от руки .hand-ring вокруг слова */
+  /* характер блоков: карточки, квадраты, круговая, уроки, шаги, сервисы */
+  --block-bg:var(--paper-deep);
+  --block-border:0 solid transparent;
+  --block-shadow:none;
+  --block-radius:var(--r-l);
+  --block-warm-bg:var(--peach);       /* «это про нас»: тёплая карточка, квадрат, сервис, шаг */
+  --block-warm-border:var(--block-border);
+  /* вывод слайда .note.takeaway */
+  --tk-bg:var(--paper);
+  --tk-border:1.5px solid var(--flame);
+  --tk-bar:6px solid var(--flame);  /* левый край */
+  --tk-radius:var(--r-l);
+  --tk-shadow:none;
+  --tk-font:var(--font-serif);
+  /* бенто: фон слайда и плитки */
+  --bento-bg:var(--paper-deep);
+  --tile-bg:var(--paper);
+  --tile-border:0 solid transparent;
+  --tile-shadow:none;
+  --tile-radius:var(--r-l);
+  --slide-pad:64px;
+  --pt:31px;                /* верхнее поле слайда */
+  --pb:64px;                /* нижнее поле: полоса под логотип и кнопки, контент туда не заходит; до кнопок остаётся 16 px */
+  --read:730px;             /* лид, сноски */
+  --wide:1000px;            /* таблицы, столбики, лесенка */
+  --grid:1140px;            /* сетки карточек, матрица, вывод */
+  --r-s:4px; --r-m:8px; --r-l:16px;
+  /* параметры, которые слайд переопределяет инлайном на .body — вместо классов .sNN */
+  --body-gap:10px;
+  --card-pad:16px 18px;
+  --card-p:15px;
+}
+@font-face{font-family:"NY";src:local("New York"),local("NewYork");font-weight:400 700}
+
+/* ---------- сброс и сцена ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:17px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-synthesis:none;overflow:hidden}
+/* сцена всегда 1280×720 и масштабируется целиком под окно: на макбуке и на проекторе одна картинка */
+.deck::before{content:"";position:absolute;inset:0;background:var(--stage-pattern);pointer-events:none}
+.deck{position:absolute;left:50%;top:50%;width:1280px;height:720px;background:var(--paper);
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+.slide{position:absolute;inset:0;padding:var(--pt) var(--slide-pad) var(--pb);display:none;flex-direction:column;overflow:hidden}
+.slide.on{display:flex;animation:enter .32s cubic-bezier(.2,.7,.2,1) both}
+@keyframes enter{from{transform:translateY(9px)}to{transform:none}}
+.slide > * + *{margin-top:11px}
+.slide-head{display:block}
+/* тело слайда: по умолчанию центрирует контент в свободном поле */
+.body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:var(--body-gap);margin-top:0}
+.body > *{margin-top:0}
+.body.follow{justify-content:flex-start;padding-top:14px}   /* лид кончается двоеточием — блок сразу под ним */
+.body.airy{--body-gap:26px;--card-pad:26px 28px;--card-p:15px}  /* контента мало: крупнее и с воздухом, а не пустота снизу */
+.body.airy table{font-size:15px}
+/* код в тексте — без подложки и отступа: чип в начале строки читается как отступ */
+code,.mono{font-family:var(--font-mono);font-size:.9em;font-weight:600;color:var(--ink)}
+.body.airy td{padding:9px 16px 9px 0}
+.body.fill > .cards{flex:1;min-height:0}                    /* первый блок растягивается на всю высоту */
+.body.fill > .cards.c2 > .card{display:flex;flex-direction:column;justify-content:center;padding:28px 32px}
+.body.fill > .cards.c2 > .card h3{font-size:24px;margin-top:0}
+.body.fill > .cards.c2 > .card p:not(.big){font-size:16px;line-height:1.5}
+
+/* ---------- типографика ---------- */
+h1,h2,h3{text-wrap:balance}
+h2{font-family:var(--font-serif);font-weight:var(--display-weight);letter-spacing:calc(-.018em + var(--display-track));font-size:calc(40px * var(--h2-scale));line-height:1.1;max-width:32ch;text-wrap:balance}
+h2.w-wide{max-width:34ch}
+h3{font-weight:700;letter-spacing:-.008em}
+/* маркер: одно слово или короткая фраза на слайд, вид задаёт тема */
+.mk{background:var(--mk-bg);box-shadow:var(--mk-shadow);border-radius:var(--mk-radius,0);padding:var(--mk-pad,0);-webkit-box-decoration-break:clone;box-decoration-break:clone;text-decoration:var(--mk-deco);text-underline-offset:.2em;text-decoration-skip-ink:none}
+/* пометка от руки: одна на слайд, комментарий автора к блоку, не дубль заголовка.
+   .pin — поверх слайда в свободном месте (left/top инлайном), .hand-arrow — стрелка к блоку */
+.hand{font-family:var(--font-hand);font-style:var(--hand-style);font-weight:var(--hand-weight);font-size:var(--hand-size);
+  line-height:1.1;color:var(--hand-ink);display:inline-block;align-self:flex-start;transform:rotate(-2.5deg);transform-origin:left center}
+.hand.pin{position:absolute;margin:0;z-index:2;max-width:260px}
+.hand-arrow{display:block;width:64px;height:40px;margin-top:4px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.kicker{font-family:var(--font-label);font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--measured-deep);margin-bottom:8px}
+.lede{font-size:17px;color:var(--ink-soft);max-width:var(--read);margin-top:10px}
+.note{font-size:14px;line-height:1.43;color:var(--ink-faint);max-width:var(--read)}
+.note.quote{color:var(--ink);font-size:15px;max-width:var(--wide)}
+/* вывод слайда: необязателен; если есть — последний ребёнок .body, одна фраза, блоком, а не сноской */
+.note.takeaway{max-width:var(--grid);background:var(--paper);border:1.5px solid var(--flame);border-left-width:6px;
+  border-radius:var(--r-l);padding:14px 24px;margin-bottom:12px;
+  font-family:var(--font-serif);font-size:21px;line-height:1.35;letter-spacing:-.01em;color:var(--ink)}
+.note.takeaway b{font-weight:600}
+.src{margin-top:auto;padding-top:12px;font-size:13px;color:var(--ink-faint);border-top:1px solid var(--rule);max-width:var(--wide)}
+strong,b{font-weight:700}
+
+/* ---------- обложка ---------- */
+.cover h1{margin-top:auto;font-family:var(--font-serif);font-weight:var(--display-weight);font-size:calc(80px * var(--display-scale));line-height:1.02;letter-spacing:calc(-.024em + var(--display-track));text-transform:var(--display-case);text-shadow:var(--display-shadow)}
+.cover h1 .ac{color:var(--flame-deep)}
+/* подпись площадки или серии над заголовком, с точкой акцента; без неё заголовок стоит как раньше */
+.cover .kick{margin-top:auto;font-family:var(--font-kick);font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.cover .kick::before{content:'';display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--measured);margin-right:10px;vertical-align:1px}
+.cover .kick + h1{margin-top:18px}
+/* обводка от руки вокруг слова или короткой фразы: одна на деку-две, как пометка докладчика */
+.hand-ring{position:relative;display:inline-block;margin:0 32px 0 18px}  /* поля под овал: он шире слова */
+.hand-ring svg{position:absolute;left:-18px;top:-15px;width:calc(100% + 44px);height:calc(100% + 30px);overflow:visible;pointer-events:none}
+.hand-ring path{fill:none;stroke:var(--ring-ink);stroke-width:3;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.cover .sub{margin-top:28px;font-size:18px;color:var(--ink-soft);max-width:var(--read)}
+.cover .meta{margin-top:auto;margin-bottom:24px;padding-top:36px;font-size:13px;color:var(--ink-faint);
+  display:flex;gap:26px;flex-wrap:wrap;border-top:1px solid var(--rule)}
+
+/* ---------- перебивка ---------- */
+.divider .dv-num{margin-top:auto;font-size:14px;font-weight:700;color:var(--measured);letter-spacing:.06em;text-transform:uppercase}
+.divider .dv-title{font-family:var(--font-serif);font-weight:var(--display-weight);letter-spacing:calc(-.025em + var(--display-track));font-size:calc(108px * var(--display-scale));text-transform:var(--display-case);text-shadow:var(--display-shadow);line-height:.95;margin-top:14px;max-width:none}
+.divider .dv-sub{margin-top:24px;font-size:19px;line-height:1.4;color:var(--ink-soft);max-width:var(--read)}
+.divider .dv-nav{margin-top:auto;margin-bottom:24px;padding:28px 0 0;border-top:1px solid var(--rule);display:flex;gap:30px;flex-wrap:wrap;
+  list-style:none;font-size:14px;font-weight:600;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.divider .dv-nav li.cur{color:var(--measured);font-weight:700}
+
+/* ---------- карточки ---------- */
+.cards{display:grid;gap:14px;max-width:var(--grid)}
+.cards.c2{grid-template-columns:1fr 1fr}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--paper-deep);border-radius:var(--r-l);padding:var(--card-pad);display:flex;flex-direction:column}
+.card.warm{background:var(--peach)}
+.card.span2{grid-column:span 2}
+.card > .tag{align-self:flex-start}
+.card h3{font-size:19px;line-height:1.25;margin-top:12px}
+.card > .tag + h3{margin-top:12px}
+.card h3:first-child{margin-top:0}
+.card p{font-size:var(--card-p);line-height:1.45;color:var(--ink-soft);margin-top:8px}
+.card .big{font-family:var(--font-serif);font-weight:var(--display-weight);font-size:48px;line-height:1;margin-top:12px;letter-spacing:-.02em;color:var(--ink)}
+.card.warm .big{color:var(--measured-deep)}
+.card .big small{font-family:inherit;font-size:14px;letter-spacing:0}
+.card .ms{margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-soft)}
+.card.warm .ms{border-top-color:color-mix(in srgb,var(--measured) 18%,transparent)}
+.card > :has(+ .ms),.card > ul.pl:has(+ .ms){margin-bottom:10px}   /* margin-top:auto у сноски в полной карточке схлопывается в 0 — линия ложится на текст */
+.card p + .ms{padding-top:12px;margin-top:10px}
+.card ul.pl{margin:8px 0 0;padding-left:16px;font-size:13px;line-height:1.4;color:var(--ink-soft)}
+.card ul.pl li{margin-top:4px}
+.card ul.pl b{color:var(--ink)}
+.cards.c4 .card{padding:15px 16px}
+.cards.c4 .card p:not(.big),.cards.c4 .card .ms{font-size:13px;line-height:1.38}
+.cards.c4 .card h3{font-size:15px}
+
+/* ---------- метки ---------- */
+.tag{font-family:var(--font-label);display:inline-block;background:var(--lilac);color:var(--ink);font-size:12px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;padding:4px 9px;border-radius:6px;line-height:1.2}
+.tag.warm{background:var(--peach);color:var(--measured-deep)}
+.tag.alt{background:color-mix(in srgb,var(--acc2) 22%,var(--paper));color:var(--ink)}   /* второй цвет темы: вторая сущность, не украшение */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-m);
+  padding:3px 8px 3px 4px;font-size:13px;color:var(--ink-soft);white-space:nowrap}
+.chip img{width:16px;height:16px;border-radius:var(--r-s);flex:none}
+.chip.bare{padding-left:8px}
+.chips.compact{gap:5px}
+.chips.compact .chip{padding:2px 6px 2px 3px;gap:5px}
+.chips.compact .chip img{width:15px;height:15px}
+.logos{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.logos img{width:24px;height:24px;border-radius:6px;background:var(--paper);box-shadow:0 0 0 1px var(--rule)}
+.logos a{display:inline-flex;line-height:0}
+
+/* ---------- столбики ---------- */
+.bars-h{font-size:14px;font-weight:700;color:var(--ink-soft)}
+.bars{display:grid;gap:13px;max-width:var(--wide);margin-top:14px}
+.bar-row{display:grid;grid-template-columns:230px minmax(260px,1fr) 74px;gap:14px;align-items:center}
+.bar-label{font-size:14px;line-height:1.28;color:var(--ink-soft)}
+.bar-track{height:22px;background:var(--paper);border:1px solid var(--rule);position:relative;overflow:hidden;border-radius:var(--r-s)}
+.bar-fill{display:block;height:100%;background:var(--lilac-mid);min-width:3px;border-radius:var(--r-s)}  /* ширина = подписи справа, всегда */
+.bar-fill.m{background:var(--flame)}
+.bar-val{font-family:var(--font-serif);font-size:18px;font-variant-numeric:tabular-nums}
+
+/* ---------- таблица ---------- */
+table{border-collapse:collapse;width:100%;max-width:var(--wide);font-size:15px}
+th{font-family:var(--font-label);text-align:left;font-weight:700;color:var(--ink-faint);font-size:13px;letter-spacing:.03em;padding:0 16px 9px 0;border-bottom:1px solid var(--rule)}
+td{padding:3px 16px 3px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+td .m,.it .m{color:var(--measured-deep);font-weight:700}
+
+/* ---------- лесенка: пилюля → стрелка с подписью → пилюля ---------- */
+.steps2{max-width:var(--wide);border-left:3px solid var(--flame);padding-left:16px;display:grid;
+  grid-template-columns:max-content 260px max-content;column-gap:12px;row-gap:12px;align-items:center}
+.steps2-h{grid-column:1/-1;font-size:15px;font-weight:700}
+.rung{display:contents}
+.pill{display:block;background:var(--paper-deep);border-radius:999px;padding:8px 18px;font-size:14px;font-weight:700;line-height:1.2;white-space:nowrap}
+.pill.warm{background:var(--peach);color:var(--measured-deep)}
+.arr{display:grid;grid-template-rows:auto auto;align-items:center;justify-items:center;gap:3px;min-width:120px}
+.arr i{display:block;width:100%;height:2px;background:var(--ink-faint);position:relative}
+.arr i::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid var(--ink-faint);border-right:0}
+.arr em{font-style:normal;font-size:12px;color:var(--ink-faint);line-height:1.2;white-space:nowrap}
+
+/* ---------- матрица 2×2 с подписями строк ---------- */
+.matrix{display:grid;grid-template-columns:44px 1fr 1fr;gap:10px 14px;max-width:var(--grid)}
+.mx-col{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;padding:0 4px 2px}
+.mx-row{font-weight:700;font-size:14px;line-height:1;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;
+  align-self:stretch;justify-self:center;color:var(--ink-soft);white-space:nowrap;border-left:2px solid var(--rule);padding-left:10px}
+.mx-cell{padding:8px 18px}
+.matrix + .note.takeaway{margin-top:24px}
+.hh{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--measured-deep);margin-top:0}
+.hh.plain{color:var(--ink-soft)}
+.it{margin-top:6px;font-size:14px;line-height:1.4;color:var(--ink-soft)}
+.it b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+
+/* ---------- таймлайн ---------- */
+.tl{max-width:var(--wide);border-top:2px solid var(--ink)}
+.tlrow{display:grid;grid-template-columns:82px 1fr 420px;gap:14px;padding:8px 0 9px;border-bottom:1px solid var(--rule);align-items:baseline}
+.tlrow .when{font-family:var(--font-serif);font-size:15px;color:var(--ink-faint)}
+.tlrow .what{font-size:14px}
+.tlrow .end{font-size:13px;font-weight:700;color:var(--measured);text-align:right}
+.tlrow .end u{display:block;text-decoration:none;font-weight:400;font-size:13px;color:var(--ink-faint)}
+
+/* ---------- бенто (финальный слайд выводов) ---------- */
+.bento-slide{background:var(--paper-deep);padding-bottom:78px}
+.body.bfill{justify-content:stretch}
+.bento{flex:1;min-height:0;display:grid;gap:12px;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,1fr)}
+.tile{background:var(--paper);border-radius:var(--r-l);padding:14px;min-height:0;min-width:0;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px}
+.tile.row{flex-direction:row;text-align:left;gap:16px;padding:16px 24px}
+.tile.row .bl{font-size:18px}
+.bl{font-weight:600;font-size:15px;line-height:1.2;letter-spacing:-.015em}
+.bi{width:36px;height:36px;color:var(--flame-deep);flex:none}
+.bi svg{width:36px;height:36px;display:block}
+.bcap{font-size:14px;color:var(--ink-soft);font-weight:600;letter-spacing:-.01em}
+.tile.warm{background:var(--measured);color:var(--on-accent);padding:22px 24px}   /* --on-accent на --measured от 4,5:1; на --flame подпись может не пройти */
+.tile.warm .bcap,.tile.warm .bsub{color:var(--on-accent)}
+.bnum{font-family:var(--font-serif);font-size:calc(92px * var(--display-scale));line-height:.95;letter-spacing:calc(-.03em + var(--display-track));font-weight:var(--display-weight)}
+.bnum small{font-size:34px;font-weight:600;letter-spacing:-.01em}
+.bsub{font-size:14px;line-height:1.3;max-width:28ch}
+.tile.ctr{gap:14px}
+.blogo{width:260px;height:auto;display:block}
+.bchips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.bchips .chip{font-size:14px;padding:5px 12px 5px 6px;border-radius:10px}
+.bchips .chip.bare{padding:5px 9px}
+.tile.peach{background:var(--peach);gap:14px}
+.lad{display:flex;flex-direction:column;gap:8px;width:100%;max-width:336px}
+.ls{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-radius:14px;padding:12px 16px;text-align:left}
+.ls b{font-weight:600;font-size:16px}
+.ls i{font-style:normal;font-size:13px;opacity:.85}
+.ls.l1{background:var(--paper);margin-right:56px}
+.ls.l2{background:color-mix(in srgb,var(--flame) 28%,var(--paper));margin-right:20px}
+.ls.l3{background:var(--measured);color:var(--on-accent)}
+
+/* ---------- ссылки: светлые чипы, все одного цвета; тёмных кнопок нет ---------- */
+.links{display:flex;gap:14px;flex-wrap:wrap;max-width:var(--grid)}
+.links a{display:inline-flex;align-items:center;gap:8px;background:var(--paper-deep);color:var(--ink);text-decoration:none;
+  font-size:17px;font-weight:600;padding:10px 18px;border-radius:999px;border:1px solid var(--rule)}
+.links a span{color:var(--ink-soft);font-weight:400;font-size:15px}
+
+/* ---------- выделенный блок: светлый с пунктиром акцента (вместо тёмной плашки) ---------- */
+.card.dash{background:var(--paper);border:2px dashed var(--flame)}
+
+/* ---------- четыре квадрата: короткие сущности, иконка + имя + одна сноска ---------- */
+.sq4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:var(--grid);align-content:center}
+.sq4 .sq{aspect-ratio:1;background:var(--paper-deep);border-radius:var(--r-l);padding:24px;display:flex;flex-direction:column;gap:14px}
+.sq4 .sq.warm{background:var(--peach)}
+.sq4 .sq .bi{color:var(--ink-soft)}
+.sq4 .sq.warm .bi{color:var(--measured-deep)}
+.sq4 .sq h3{font-size:30px;line-height:1.1;margin:auto 0 0}
+.sq4 .sq .ms{font-size:16px;line-height:1.4;margin:0;border-top:1px solid var(--rule);padding-top:12px;min-height:3.3em}
+
+/* ---------- круговая: состав целого (вместо столбиков, когда важны доли и итог) ---------- */
+.donut{background:var(--paper-deep);border-radius:var(--r-l);padding:24px 30px;display:grid;grid-template-columns:250px 1fr;gap:34px;align-items:center;max-width:var(--wide)}
+.dring{position:relative;width:250px;height:250px}
+.dring svg{width:100%;height:100%;display:block}
+.dc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dc b{font-family:var(--font-serif);font-size:56px;line-height:1;font-weight:var(--display-weight);letter-spacing:calc(-.02em + var(--display-track));font-variant-numeric:tabular-nums}
+.dc span{font-size:15px;color:var(--ink-soft);margin-top:4px}
+.dleg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.dleg li{display:grid;grid-template-columns:16px 1fr auto auto;gap:12px;align-items:center;font-size:18px}
+.dleg i{width:16px;height:16px;border-radius:4px}
+.dleg b{font-family:var(--font-serif);font-weight:var(--display-weight);font-size:22px;font-variant-numeric:tabular-nums}
+.dleg em{font-style:normal;font-size:16px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+/* ---------- «Что забрать»: уроки раздела, 2×2, равноценные ---------- */
+.lessons{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:16px;max-width:var(--grid)}
+.ls-i{background:var(--paper-deep);border-radius:var(--r-l);padding:24px 30px;display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:center}
+.ls-i h3{font-size:28px;line-height:1.2;margin:0 0 10px}
+.ls-i p{font-size:20px;line-height:1.45;margin:0}
+.ls-n{font-family:var(--font-serif);font-size:52px;line-height:.9;font-weight:var(--display-weight);color:var(--measured-deep)}
+
+/* ---------- доклад: «Кто говорит» — кто я слева, что сделал справа ---------- */
+.who{display:grid;grid-template-columns:1fr 1.18fr;gap:18px;max-width:var(--grid);align-items:stretch}
+.svc{display:flex;flex-direction:column;gap:10px;min-width:0}
+.svc-h{font-family:var(--font-label);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+.who .card{flex:1;justify-content:center;gap:14px;--card-pad:22px 26px}
+.who .card p{margin:0;font-size:18px;color:var(--ink)}
+.svc-g{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1.3fr;grid-auto-rows:1fr;gap:10px}   /* первый ряд — два главных .hero */
+.sv{background:var(--paper-deep);border-radius:var(--r-l);padding:14px 16px;display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start}
+.sv.warm{background:var(--peach)}
+.sv .bi,.sv .bi svg{width:30px;height:30px;color:var(--ink-soft)}
+.sv div b{display:block;font-size:17px;line-height:1.2}
+.sv div span{display:block;font-size:15px;line-height:1.3;color:var(--ink-soft);margin-top:4px}
+.sv.hero b{font-size:19px}.sv.hero div span{color:var(--ink)}
+.sv em{font-style:normal;font-weight:800;color:var(--measured-deep)}
+
+/* ---------- доклад: «Что сделать в первую очередь» — шаги слева, ссылки справа ---------- */
+.first{display:grid;grid-template-columns:1fr 470px;gap:24px;max-width:var(--grid);align-items:stretch;flex:1;min-height:0}
+.fs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.fs li{background:var(--paper-deep);border-radius:var(--r-l);padding:16px 26px;display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center;flex:1}
+.fs li.warm{background:var(--peach)}
+.fs h3{font-size:25px;line-height:1.15;margin:0}.fs p{font-size:19px;line-height:1.35;color:var(--ink-soft);margin:4px 0 0}
+.fs .ls-n{font-size:48px}
+.skl{background:var(--paper);border:1.5px solid var(--rule);border-radius:var(--r-l);padding:26px 30px;display:flex;flex-direction:column;justify-content:flex-start;gap:16px}
+.skl ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.skl li{display:grid;grid-template-columns:120px 1fr;gap:12px;font-size:20px;line-height:1.3;align-items:baseline;padding:18px 0;border-top:1px solid var(--rule)}
+.skl-f{margin:auto 0 0;font-size:17px;line-height:1.4;color:var(--ink-soft)}
+.skl li span{font-family:var(--font-mono);font-size:17px;color:var(--ink-soft);overflow-wrap:anywhere}
+
+/* ---------- доклад: «Спасибо» — призыв подписаться крупно, остальные ссылки рядом ---------- */
+.thanks h2{font-size:96px;max-width:none;margin-top:auto}
+.thanks .body{justify-content:flex-start;flex:none;margin-top:30px;margin-bottom:auto}
+.thanks .cards{grid-template-columns:1.3fr 1fr;gap:18px;--card-pad:30px 34px}
+.thanks .lede{font-size:24px;margin-top:14px}
+.thanks .card p{font-size:19px;line-height:1.45}
+.thanks .card h3{font-size:24px}
+.thanks .cta h3{font-size:56px;margin-top:12px;font-weight:800;letter-spacing:-.02em}
+.thanks .card h3{margin-top:12px}
+
+/* ---------- бенто: главная мысль в центре вместо логотипа ---------- */
+.tile.main{background:var(--main-tile-bg);color:var(--main-tile-ink);padding:26px 30px;gap:14px}
+
+/* ---------- растяжка: главный блок слайда .grow занимает всю высоту тела, кегль растёт вместе с местом.
+   Без неё блок стоит своей высотой, и снизу остаётся 150–250 px пустоты (аудит: underfill) ---------- */
+.body > .grow{flex:1;min-height:0}
+.body:has(> .grow){padding-top:24px}   /* растянутый блок иначе встаёт вплотную к заголовку или лиду */
+.cards.grow .card{padding:26px 28px}
+.cards.grow .card h3{font-size:24px;line-height:1.2}
+.cards.grow .card > .tag + h3{margin-top:16px}
+.cards.grow .card p:not(.big):not(.ms){font-size:17px;line-height:1.5}
+.cards.grow .card ul.pl{font-size:17px;line-height:1.45;margin-top:14px;padding-left:20px}
+.cards.grow .card ul.pl li{margin-top:9px}
+.cards.grow .card .ms{font-size:16px;line-height:1.4;min-height:calc(2.8em + 16px);padding-top:16px}   /* две строки: линии сносок одного ряда на одной высоте */
+.cards.c2.grow > .card{justify-content:center;padding:32px 36px}
+.cards.c2.grow > .card h3{font-size:28px;line-height:1.2}
+.cards.c2.grow > .card p:not(.big){font-size:19px;line-height:1.45;margin-top:12px}
+.cards.c4.grow .card{padding:20px 20px}
+.cards.c4.grow .card h3{font-size:21px}
+.cards.c4.grow .card p:not(.big),.cards.c4.grow .card .ms{font-size:16px;line-height:1.42}
+.cards.c4.grow .card ul.pl{font-size:16px;margin-top:12px}
+.cards.grow .card > .chips{margin-top:auto;padding-top:14px}
+.cards.c4.grow .card .chips .chip{font-size:14px;padding:4px 9px}
+.cards.c4.grow .card .big{font-size:56px;margin-top:auto}
+.cards.c4.grow ~ .steps2{grid-template-columns:max-content 320px max-content;row-gap:14px}
+.cards.c4.grow ~ .steps2 .steps2-h{font-size:17px}
+.cards.c4.grow ~ .steps2 .pill{font-size:16px;padding:10px 20px}
+.matrix.grow{grid-template-rows:auto 1fr 1fr}
+.matrix.grow .mx-cell{padding:20px 26px;display:flex;flex-direction:column;justify-content:center}
+.matrix.grow .hh{font-size:13px}
+.matrix.grow .it{font-size:20px;margin-top:10px}
+.matrix.grow .it b{font-size:24px;margin-bottom:6px}
+.matrix.grow .mx-col{font-size:19px}
+.matrix.grow .mx-row{font-size:15px}
+/* Таблица, таймлайн, квадраты и круговая растут масштабом, а не рамкой: растянутая таблица раздувает шапку
+   и строки, растянутый квадрат — дыра между иконкой и подписью (аудит: void, sparse-rows) */
+.body > table.grow,.body > .tl.grow,.body > .sq4.grow,.body > .donut.grow{flex:none}
+table.grow{max-width:var(--grid)}
+.body table.grow td{font-size:21px;line-height:1.35;vertical-align:middle;padding:20px 28px 20px 0}
+.body table.grow th{font-size:14px;vertical-align:bottom;padding:0 28px 12px 0}
+.tl.grow{max-width:var(--grid)}
+.tl.grow .tlrow{align-items:center;grid-template-columns:150px 1fr 440px;gap:28px;padding:24px 0}
+.tl.grow .tlrow .when{font-size:22px}
+.tl.grow .tlrow .what{font-size:22px;line-height:1.35}
+.tl.grow .tlrow .end{font-size:19px;line-height:1.35}
+.tl.grow .tlrow .end u{font-size:16px;margin-top:4px}
+.sq4.grow .sq{aspect-ratio:4/5;padding:26px 26px 24px;gap:0}
+.sq4.grow .sq .bi{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,currentColor 11%,transparent)}
+.sq4.grow .sq .bi svg{width:42px;height:42px}
+.sq4.grow .sq h3{font-size:34px;margin:auto 0 0}
+.sq4.grow .sq .chips{margin-top:16px}
+.sq4.grow .sq .chip{font-size:15px;padding:4px 10px}
+.sq4.grow .sq .ms{font-size:18px;line-height:1.4;margin-top:16px;padding-top:16px;min-height:calc(4.2em + 16px)}
+.donut.grow{max-width:var(--grid);grid-template-columns:auto minmax(0,460px);justify-content:center;gap:80px;padding:36px 56px}
+.donut.grow .dring{width:340px;height:340px}
+.donut.grow .dc b{font-size:84px}
+.donut.grow .dc span{font-size:18px;margin-top:6px}
+.donut.grow .dleg{gap:0}
+.donut.grow .dleg li{font-size:22px;grid-template-columns:20px minmax(0,1fr) 72px 64px;gap:18px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.donut.grow .dleg li:last-child{border-bottom:0}
+.donut.grow .dleg i{width:20px;height:20px}
+.donut.grow .dleg b{font-size:30px;text-align:right}
+.donut.grow .dleg em{font-style:normal;font-size:18px;color:var(--ink-soft);text-align:right;font-variant-numeric:tabular-nums}
+.who.grow .card{justify-content:center;gap:18px;--card-pad:30px 32px}
+.who.grow .card p{font-size:22px;line-height:1.4}
+.who.grow .card p.who-name,.who .card p.who-name{font-family:var(--font-serif);font-weight:var(--display-weight);font-size:40px;line-height:1.05;letter-spacing:calc(-.02em + var(--display-track));margin-bottom:8px}
+.who.grow .card .ms{font-size:18px;padding-top:18px}
+.who.grow .sv{grid-template-columns:1fr;align-content:center;gap:16px;padding:22px 24px}
+.who.grow .sv .bi,.who.grow .sv .bi svg{width:36px;height:36px}
+.who.grow .sv div b{font-size:21px}
+.who.grow .sv.hero div b{font-size:24px}
+.who.grow .sv div span{font-size:17px;margin-top:6px}
+.who.grow .sv.hero em{display:block;font-size:44px;line-height:1;margin-bottom:10px;font-family:var(--font-serif);font-weight:var(--display-weight)}
+
+/* ---------- характер блоков из токенов темы; .warm, .dash, .peach, .main сильнее по специфичности ---------- */
+.card,.sq4 .sq,.donut,.ls-i,.sv,.fs li{background:var(--block-bg);border:var(--block-border);box-shadow:var(--block-shadow);border-radius:var(--block-radius)}
+.card.warm,.sq4 .sq.warm,.sv.warm,.fs li.warm{background:var(--block-warm-bg);border:var(--block-warm-border)}
+.note.takeaway{background:var(--tk-bg);border:var(--tk-border);border-left:var(--tk-bar);border-radius:var(--tk-radius);box-shadow:var(--tk-shadow);font-family:var(--tk-font)}
+.bento-slide{background-color:var(--bento-bg)}
+.tile{background:var(--tile-bg);border:var(--tile-border);box-shadow:var(--tile-shadow);border-radius:var(--tile-radius)}
+.bmain{font-family:var(--font-serif);font-size:calc(46px * var(--display-scale));line-height:1.05;font-weight:var(--display-weight);letter-spacing:-.02em}
+
+/* ---------- логотип, навигация, экспорт ---------- */
+/* логотип и кнопки стоят на полях контента (--slide-pad) и на одной средней линии: 720 − 16 − 32/2 = 688 */
+.brand{position:absolute;left:var(--slide-pad);bottom:21px;height:22px;z-index:4;opacity:.95}
+span.brand{font-size:14px;line-height:22px;font-weight:700;color:var(--ink);letter-spacing:-.01em}   /* заглушка: имя или канал; логотип темы ставит apply-theme.py */
+.nav{position:absolute;right:var(--slide-pad);bottom:16px;z-index:4;display:flex;align-items:center;gap:12px}
+.nav button{appearance:none;border:1px solid var(--rule);background:var(--paper);color:var(--ink);width:38px;height:32px;border-radius:var(--r-m);
+  cursor:pointer;font-size:15px;line-height:1;display:grid;place-items:center;font-family:inherit;transition:background .16s ease,border-color .16s ease}
+.nav button:hover:not(:disabled){background:var(--peach);border-color:var(--flame)}
+.nav button:disabled{opacity:.32;cursor:default}
+.nav .pos{font-size:13px;color:var(--ink-faint);font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+html.export .nav{display:none}
+html.export .slide.on{transition:none;animation:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+
+<!-- ОБЛОЖКА -->
+<section class="slide cover on">
+  <p class="kick">Площадка или серия</p>
+  <h1>Первая строка заголовка<br><span class="ac">вторая строка акцентом</span></h1>
+  <p class="sub">Подзаголовок одной разговорной фразой: что работает, что нет и что с этим делать.</p>
+  <div class="meta"><span>месяц 2026</span></div>
+</section>
+
+<!-- ДОКЛАД: «Кто говорит» — второй слайд. Слева роль и канал, справа 4–6 сделанных вещей с цифрой у каждой;
+     два главных — .hero.warm. Только реальное, с источником цифры в drafts/; призыв на канал — здесь и на «Спасибо» -->
+<section class="slide">
+  <h2>Привет, я&nbsp;Имя, и&nbsp;одна фраза о&nbsp;себе</h2>
+  <div class="body" style="--body-gap:18px">
+    <div class="who grow">
+      <div class="svc"><p class="svc-h">Кто я</p>
+        <div class="card">
+          <p class="who-name">Имя Фамилия</p>
+          <p><b>Роль и&nbsp;компания:</b> чем занимаюсь.</p>
+          <p><b>Прошлый опыт:</b> масштаб одной цифрой.</p>
+          <p><b>Почему меня слушать:</b> одна фраза про опыт в&nbsp;теме доклада.</p>
+          <p><b>Сейчас:</b> над чем работаю и&nbsp;что ищу.</p>
+          <p class="ms">Пишу про тему в&nbsp;<b>@канал</b></p>
+        </div></div>
+      <div class="svc"><p class="svc-h">Что я&nbsp;сделал</p>
+        <div class="svc-g">
+          <div class="sv warm hero"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="21" cy="21" r="12"/><path d="M30 30l10 10"/></svg></span><div><b>Главное дело</b><span><em>N×</em>Результат с&nbsp;цифрой: во&nbsp;сколько раз быстрее</span></div></div>
+          <div class="sv warm hero"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 8l16 8-16 8-16-8z"/><path d="M8 24l16 8 16-8M8 32l16 8 16-8"/></svg></span><div><b>Второе главное</b><span><em>~50</em>чего-то, срок вместо срока</span></div></div>
+          <div class="sv"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="12" width="32" height="24" rx="4"/></svg></span><div><b>Проект</b><span><em>310+</em> установок</span></div></div>
+          <div class="sv"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="12" width="32" height="24" rx="4"/></svg></span><div><b>Проект</b><span>одна строка</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ПЕРЕБИВКА -->
+<section class="slide divider">
+  <p class="dv-num">Раздел 1 из 4</p>
+  <h2 class="dv-title">Рынок</h2>
+  <p class="dv-sub">Тезис раздела одной фразой</p>
+  <ol class="dv-nav"><li class="cur">1 Рынок</li><li>2 Деньги</li><li>3 Внедрение</li><li>4 Выводы</li></ol>
+</section>
+
+<!-- СЛАЙД: две карточки под лидом с двоеточием (follow) -->
+<section class="slide">
+  <div class="slide-head"><h2>Заголовок — главная мысль слайда, договорённая до конца</h2></div>
+  <p class="lede">Лид в одну-две строки, и если он кончается двоеточием, тело идёт сразу под ним:</p>
+  <div class="body follow" style="--body-gap:26px">
+    <div class="cards c2 grow" style="gap:22px">
+      <div class="card"><h3>Чат — отвечает на вопрос</h3><p>Один-два коротких предложения о том, что это и почему важно.</p></div>
+      <div class="card warm"><h3>Агент — делает работу <span style="color:var(--measured-deep)">здесь мы</span></h3><p>Тёплая карточка отмечает «это про нас». Один такой акцент на слайд.</p></div>
+    </div>
+    <div>
+      <p class="bars-h">Подпись шкалы: что мерим и за какой период</p>
+      <div class="bars">
+        <div class="bar-row"><span class="bar-label">Сегмент А</span><span class="bar-track"><span class="bar-fill" style="width:20%"></span></span><span class="bar-val">20%</span></div>
+        <div class="bar-row"><span class="bar-label">Сегмент Б</span><span class="bar-track"><span class="bar-fill m" style="width:60%"></span></span><span class="bar-val">60%</span></div>
+      </div>
+    </div>
+    <p class="note takeaway"><b>Вывод жирной антиквой одной фразой.</b> Хвост обычным начертанием, если без него нельзя.</p>
+  </div>
+</section>
+
+<!-- СЛАЙД: три карточки с тегами и сносками по низу (airy) -->
+<section class="slide">
+  <div class="slide-head"><h2>Три карточки: у всех тег, у всех сноска на одной линии</h2></div>
+  <p class="lede">Лид-утверждение: <span class="mk">что слайд доказывает</span>.</p>
+  <div class="body airy">
+    <div class="cards c3 grow">
+      <div class="card"><span class="tag">Малый бизнес</span><h3>Обучение</h3><ul class="pl"><li>Пункт тезисом в&nbsp;одну строку</li><li>Второй пункт, чуть длиннее первого</li><li>Третий пункт</li></ul><p class="ms"><b>Подпись, несущая смысл.</b></p></div>
+      <div class="card"><span class="tag">Средний</span><h3>Интеграторы-партнёры</h3><ul class="pl"><li>Пункт</li><li>Пункт длиннее, на&nbsp;две строки текста</li><li>Ещё пункт</li><li>Последний пункт</li></ul><p class="ms"><b>Подпись, несущая смысл.</b></p></div>
+      <div class="card"><span class="tag">Крупный</span><h3>Консультанты</h3><ul class="pl"><li>Пункт</li><li>Пункт тезисом</li><li>Ещё один пункт</li></ul><p class="ms"><b>Одинаковые сущности — одинаковое оформление.</b></p></div>
+    </div>
+    <p class="note takeaway"><b>Что из этого следует для нас.</b></p>
+  </div>
+</section>
+
+<!-- СЛАЙД: плотный ряд из четырёх карточек с чипами и лесенка -->
+<section class="slide">
+  <div class="slide-head"><h2>Четыре ступени и наша лесенка под ними</h2></div>
+  <div class="body follow" style="--body-gap:26px;padding-top:26px">
+    <div class="cards c4 grow">
+      <div class="card"><span class="tag">1 · База</span><h3>Что входит</h3><p>Коротко: что клиент получает на&nbsp;этой ступени.</p><ul class="pl"><li>Основная функция</li><li>Лимит или квота</li></ul><div class="chips compact"><span class="chip bare">Игрок А</span><span class="chip bare">Игрок Б</span></div></div>
+      <div class="card"><span class="tag">2 · Квота</span><h3>Что входит</h3><p>Коротко: чем ступень отличается от&nbsp;предыдущей.</p><ul class="pl"><li>Что добавилось</li><li>Новый лимит</li></ul><div class="chips compact"><span class="chip bare">Игрок В</span></div></div>
+      <div class="card warm"><span class="tag warm">3 · Здесь мы</span><h3>Что входит</h3><p>Коротко: почему эта ступень наша.</p><ul class="pl"><li>Что даём сверх рынка</li><li>Чем платят</li></ul><p class="big">$N<small> / пользователь</small></p></div>
+      <div class="card"><span class="tag">4 · За объём</span><h3>Что входит</h3><p>Коротко: за&nbsp;что платят сверх тарифа.</p><ul class="pl"><li>Единица оплаты</li><li>Порог объёма</li></ul><div class="chips compact"><span class="chip bare">Игрок Г</span></div></div>
+    </div>
+    <div class="steps2">
+      <p class="steps2-h">Наша модель может быть такой же лесенкой:</p>
+      <div class="rung"><span class="pill">Базовый уровень</span><span class="arr"><i></i><em>условие перехода</em></span><span class="pill warm">следующий уровень</span></div>
+      <div class="rung"><span class="pill">Второй уровень</span><span class="arr"><i></i><em>условие перехода</em></span><span class="pill warm">следующий уровень</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- СЛАЙД: матрица 2×2 -->
+<section class="slide">
+  <div class="slide-head"><h2 class="w-wide">Матрица: две компании на две линии бизнеса</h2></div>
+  <div class="body">
+    <div class="matrix grow">
+      <div></div>
+      <div class="mx-col">Компания А</div>
+      <div class="mx-col">Компания Б</div>
+      <div class="mx-row">Линия 1</div>
+      <div class="card mx-cell"><p class="hh plain">Продукт</p><p class="it"><b>Название</b>что делает, чем берёт деньги <span class="m">$30</span></p></div>
+      <div class="card mx-cell"><p class="hh plain">Продукт</p><p class="it"><b>Название</b>что делает</p></div>
+      <div class="mx-row">Линия 2</div>
+      <div class="card warm mx-cell"><p class="hh">Платформа</p><p class="it"><b>Название</b>что делает</p></div>
+      <div class="card warm mx-cell"><p class="hh">Платформа</p><p class="it"><b>Название</b>что делает</p></div>
+    </div>
+    <p class="note takeaway"><b>Что из матрицы следует для нас.</b></p>
+  </div>
+</section>
+
+<!-- СЛАЙД: таблица -->
+<section class="slide">
+  <div class="slide-head"><h2>Таблица: только горизонтальные линейки, первая колонка жирная</h2></div>
+  <p class="lede">Лид-утверждение.</p>
+  <div class="body airy">
+    <table class="grow">
+      <tr><th>Кто</th><th>Что сделал</th><th>Как берёт деньги</th></tr>
+      <tr><td><strong>Игрок А</strong></td><td>Описание одной строкой</td><td>бесплатно; только на старших тарифах</td></tr>
+      <tr><td><strong>Игрок Б</strong></td><td>Описание, в котором <span class="m">важное выделено</span></td><td class="n"><span class="hand-ring">$15<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M150 7C185 10 198 22 194 36 190 52 140 58 96 56 46 54 4 46 5 30 7 14 52 5 104 4 140 3 172 7 184 15"/></svg></span> на пользователя в месяц</td></tr>
+      <tr><td><strong>Игрок В</strong></td><td>Описание</td><td>бесплатно</td></tr>
+      <tr><td><strong>Игрок Г</strong></td><td>Описание в две-три строки, если по-другому никак</td><td>по запросу</td></tr>
+    </table>
+    <p class="note takeaway"><b>Вывод одной фразой:</b> урок для зала или следствие для нас.</p>
+  </div>
+</section>
+
+<!-- СЛАЙД: таймлайн -->
+<section class="slide">
+  <div class="slide-head"><h2>Таймлайн: одна строка на игрока, статус справа</h2></div>
+  <div class="body airy">
+    <div class="tl grow">
+      <div class="tlrow"><span class="when">мар 2024</span><span class="what"><strong>Игрок А</strong> — что запустил и почём</span><span class="end">апр 2025: влит в тарифы<u>база подорожала на 17%</u></span></div>
+      <div class="tlrow"><span class="when">ноя 2024</span><span class="what"><strong>Игрок Б</strong> — что запустил</span><span class="end">янв 2026: аддон снят<u>функции в старшем тарифе</u></span></div>
+      <div class="tlrow"><span class="when">фев 2025</span><span class="what"><strong>Игрок В</strong> — что запустил</span><span class="end">действует<u>цены выросли</u></span></div>
+      <div class="tlrow"><span class="when">сен 2025</span><span class="what"><strong>Игрок Г</strong> — что запустил</span><span class="end">в бете<u>цена не объявлена</u></span></div>
+    </div>
+    <p class="note takeaway"><b>Общий маршрут одной фразой:</b> что произошло у всех игроков.</p>
+  </div>
+</section>
+
+<!-- СЛАЙД: четыре квадрата — короткие сущности с иконкой и одной сноской; вывода нет, заголовок всё сказал -->
+<section class="slide">
+  <div class="slide-head"><h2>Заголовок-утверждение, а под ним четыре равных варианта</h2></div>
+  <div class="body airy">
+    <!-- пометка от руки: одна на слайд, в потоке над блоком, на который указывает, стрелка к нему -->
+    <p class="hand" style="margin-left:280px">два наших — слева<svg class="hand-arrow" viewBox="0 0 64 40" aria-hidden="true"><path d="M58 4C46 14 30 22 8 30"/><path d="M8 30l10-11M8 30l13 3"/></svg></p>
+    <div class="sq4 grow">
+      <div class="sq warm"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="14"/><path d="M24 16v8l6 4"/></svg></span><h3>Наш</h3><p class="ms">Сноска в две-три строки: чем вариант отличается от&nbsp;соседних.</p><span class="chips"><span class="chip">Игрок А</span></span></div>
+      <div class="sq warm"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="14"/><path d="M24 16v8l6 4"/></svg></span><h3>Наш второй</h3><p class="ms">Сноска в две-три строки: чем вариант отличается от&nbsp;соседних.</p><span class="chips"><span class="chip">Игрок Б</span></span></div>
+      <div class="sq"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="14"/><path d="M24 16v8l6 4"/></svg></span><h3>Внешний</h3><p class="ms">Сноска в две-три строки: чем вариант отличается от&nbsp;соседних.</p><span class="chips"><span class="chip">Игрок В</span></span></div>
+      <div class="sq"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="14"/><path d="M24 16v8l6 4"/></svg></span><h3>Внешний</h3><p class="ms">Сноска в две-три строки: чем вариант отличается от&nbsp;соседних.</p><span class="chips"><span class="chip">Игрок Г</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- СЛАЙД: круговая — состав целого с итогом в центре; доли считаются через pathLength = итог -->
+<section class="slide">
+  <div class="slide-head"><h2>Из чего состоит целое: 431 источник</h2></div>
+  <div class="body" style="--body-gap:24px">
+    <div class="donut grow"><div class="dring"><svg viewBox="0 0 200 200" role="img" aria-label="431 источник по типам"><g transform="rotate(-90 100 100)">
+      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--flame)" stroke-width="36" pathLength="431" stroke-dasharray="189 242" stroke-dashoffset="0"/>
+      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--lilac-mid)" stroke-width="36" pathLength="431" stroke-dasharray="111 320" stroke-dashoffset="-191"/>
+      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--measured-deep)" stroke-width="36" pathLength="431" stroke-dasharray="125 306" stroke-dashoffset="-304"/>
+    </g></svg><div class="dc"><b>431</b><span>источник</span></div></div>
+    <ul class="dleg"><li><i style="background:var(--flame)"></i><span>Первый тип</span><b>191</b><em>44%</em></li><li><i style="background:var(--lilac-mid)"></i><span>Второй тип</span><b>113</b><em>26%</em></li><li><i style="background:var(--measured-deep)"></i><span>Третий тип</span><b>127</b><em>30%</em></li></ul></div>
+    <p class="note takeaway"><b>Вывод — только если он добавляет то, чего нет в заголовке.</b></p>
+  </div>
+</section>
+
+<!-- СЛАЙД: «Что забрать» — уроки раздела для зала, ссылки светлыми чипами; вывода внизу нет -->
+<section class="slide">
+  <div class="slide-head"><h2>Что забрать из этого раздела</h2></div>
+  <div class="body follow" style="--body-gap:18px">
+    <div class="links"><a href="#">SkillStore <span>добавляйте в избранное</span></a><a href="#">GitHub <span>ставьте звёздочки</span></a></div>
+    <div class="lessons" style="flex:1;min-height:0">
+      <div class="ls-i"><span class="ls-n">1</span><div><h3>Урок коротко</h3><p>Одна-две строки: что сделать завтра и&nbsp;почему.</p></div></div>
+      <div class="ls-i"><span class="ls-n">2</span><div><h3>Урок коротко</h3><p>Одна-две строки: что сделать завтра и&nbsp;почему.</p></div></div>
+      <div class="ls-i"><span class="ls-n">3</span><div><h3>Урок коротко</h3><p>Одна-две строки: что сделать завтра и&nbsp;почему.</p></div></div>
+      <div class="ls-i"><span class="ls-n">4</span><div><h3>Урок коротко</h3><p>Одна-две строки: что сделать завтра и&nbsp;почему.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ФИНАЛ: бенто выводов, все тезисы равноценны, без заголовка; в центре логотип или главная мысль: <div class="tile main ctr"><span class="bcap">Главное</span><span class="bmain">Нет ничего невозможного с ИИ</span></div> -->
+<section class="slide bento-slide">
+  <div class="body bfill">
+    <div class="bento">
+      <div class="tile warm" style="grid-area:1/1/3/3"><span class="bcap">Подпись к числу</span><span class="bnum">≈N <small>млрд ₽</small></span><span class="bsub">расшифровка одной строкой</span></div>
+      <div class="tile" style="grid-area:1/3/2/4"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M24 14v10l7 4"/></svg></span><span class="bl">Тезис</span></div>
+      <div class="tile" style="grid-area:1/4/2/5"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 34l10-12 8 8 14-16"/></svg></span><span class="bl">Тезис</span></div>
+      <div class="tile row" style="grid-area:1/5/2/7"><span class="bi"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="10" width="32" height="28" rx="4"/><path d="M8 20h32"/></svg></span><span class="bl">Длинный тезис в строку</span></div>
+      <div class="tile ctr" style="grid-area:2/3/4/5"><span class="blogo bmain">Логотип или главная мысль</span><span class="bcap">Ключевые наблюдения и рекомендации</span></div>
+      <div class="tile" style="grid-area:2/5/3/7"><span class="bl">Тезис с чипами</span><span class="bchips"><span class="chip bare">Раз</span><span class="chip bare">Два</span><span class="chip bare">Три</span></span></div>
+      <div class="tile peach" style="grid-area:3/1/5/3"><span class="bcap">Лесенка уровней</span><span class="lad"><span class="ls l1"><b>Ступень</b><i>бесплатно</i></span><span class="ls l2"><b>Ступень</b><i>подписка</i></span><span class="ls l3"><b>Ступень</b><i>за токены</i></span></span></div>
+      <div class="tile" style="grid-area:3/5/4/6"><span class="bl">Тезис</span></div>
+      <div class="tile" style="grid-area:3/6/4/7"><span class="bl">Тезис</span></div>
+      <div class="tile row" style="grid-area:4/3/5/5"><span class="bl">Тезис</span><span class="bchips"><span class="chip bare">Обучение</span><span class="chip bare">Консалтинг</span></span></div>
+      <div class="tile row" style="grid-area:4/5/5/7"><span class="bl">Главный ориентир одной строкой</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ДОКЛАД: «Что сделать в первую очередь» — перед бенто итогов. 3–4 шага повелительно, последний может быть .warm;
+     справа ссылки, которые зал фотографирует. Шаги, а не карточки с абзацами -->
+<section class="slide">
+  <div class="slide-head"><h2>Что сделать в&nbsp;первую очередь</h2></div>
+  <div class="body" style="--body-gap:16px;padding-top:26px">
+    <div class="first">
+      <ol class="fs">
+        <li><span class="ls-n">1</span><div><h3>Начни с&nbsp;одного действия</h3><p>Одна фраза, как именно.</p></div></li>
+        <li><span class="ls-n">2</span><div><h3>Второй шаг</h3><p>Одна фраза.</p></div></li>
+        <li><span class="ls-n">3</span><div><h3>Третий шаг</h3><p>Список справа: отдай ссылку агенту.</p></div></li>
+        <li class="warm"><span class="ls-n">4</span><div><h3>Шаг-напутствие</h3><p>Одна фраза.</p></div></li>
+      </ol>
+      <div class="skl">
+        <p class="svc-h">Ссылки · github.com/…</p>
+        <ul>
+          <li><b>Тема</b><span>owner/repo</span></li>
+          <li><b>Тема</b><span>owner/repo</span></li>
+          <li><b>Тема</b><span>owner/repo</span></li>
+          <li><b>Тема</b><span>owner/repo</span></li>
+          <li><b>Тема</b><span>owner/repo</span></li>
+          <li><b>Тема</b><span>owner/repo</span></li>
+        </ul>
+        <p class="skl-f">Отдай список агенту: он поставит всё сам.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ДОКЛАД: «Спасибо» — последний. Призыв подписаться на канал крупно, рядом остальное -->
+<section class="slide thanks">
+  <h2>Спасибо</h2>
+  <p class="lede">Главная мысль доклада одной фразой, на&nbsp;прощание.</p>
+  <div class="body">
+    <div class="cards">
+      <div class="card warm cta"><span class="tag">Подписывайся</span><h3>@канал</h3><p>Про что канал и&nbsp;что там появится после доклада.</p></div>
+      <div class="card"><span class="tag">Ещё</span><h3>@второй канал</h3><p>о&nbsp;чём</p><h3>github.com/имя</h3><p>что там</p></div>
+    </div>
+  </div>
+</section>
+
+<span class="brand">Автор · канал</span>
+<div class="nav">
+  <span class="pos" id="pos" aria-live="polite" aria-atomic="true">1 / 1</span>
+  <button id="prev" type="button" aria-label="Предыдущий слайд">‹</button>
+  <button id="next" type="button" aria-label="Следующий слайд">›</button>
+</div>
+</main>
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('#deck > .slide'));
+  var i=0, N=slides.length;
+  var pos=document.getElementById('pos');
+  var prev=document.getElementById('prev'), next=document.getElementById('next');
+  function show(n){
+    n=Math.max(0,Math.min(N-1,n));
+    slides[i].classList.remove('on'); i=n; slides[i].classList.add('on'); slides[i].scrollTop=0;
+    pos.textContent=(i+1)+' / '+N; prev.disabled=(i===0); next.disabled=(i===N-1);
+  }
+  prev.addEventListener('click',function(){show(i-1)});
+  next.addEventListener('click',function(){show(i+1)});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();show(i+1)}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1)}
+    if(e.key==='Home'){show(0)} if(e.key==='End'){show(N-1)}
+    if((e.key==='f'||e.key==='F'||e.key==='а'||e.key==='А')&&!e.metaKey&&!e.ctrlKey){e.preventDefault();
+      document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  });
+  function fit(){var w=document.documentElement.clientWidth,h=document.documentElement.clientHeight;
+    document.documentElement.style.setProperty('--k',Math.min(w/1280,h/720))}
+  addEventListener('resize',fit);
+  if(window.ResizeObserver){new ResizeObserver(fit).observe(document.documentElement)}
+  setInterval(function(){var w=document.documentElement.clientWidth,h=document.documentElement.clientHeight;
+    if(w!==fit.w||h!==fit.h){fit.w=w;fit.h=h;fit()}},400);
+  fit();
+  var m=/s=(\d+)/.exec(location.hash); show(m?+m[1]:0);
+  addEventListener('hashchange',function(){var m=/s=(\d+)/.exec(location.hash); if(m) show(+m[1])});
+  if(/[?&]export=1/.test(location.search)) document.documentElement.classList.add('export');
+  window.go=show;
+})();
+</script>
+</body>
+</html>
