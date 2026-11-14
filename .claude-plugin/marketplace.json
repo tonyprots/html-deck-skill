@@ -12,7 +12,7 @@
     {
       "name": "html-deck",
       "source": "./",
-      "description": "Презентации в HTML: сцена 1280×720, одна мысль на слайд, шесть тем, аудит вёрстки и текста.",
+      "description": "Скилл HTML-презентаций для Claude Code и Codex: создание и правка слайдов, шесть тем, проверка текста и вёрстки.",
       "version": "1.0.0",
       "author": {
         "name": "Anton Protsenko",
@@ -24,7 +24,11 @@
         "slides",
         "deck",
         "html",
-        "russian"
+        "russian",
+        "html-slides",
+        "agent-skills",
+        "claude-code",
+        "codex"
       ],
       "category": "productivity"
     }
